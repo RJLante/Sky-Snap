@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rd.backend.mapper.PictureMapper">
+
+    <resultMap id="BaseResultMap" type="com.rd.backend.model.entity.Picture">
+            <id property="id" column="id" />
+            <result property="url" column="url" />
+            <result property="name" column="name" />
+            <result property="introduction" column="introduction" />
+            <result property="category" column="category" />
+            <result property="tags" column="tags" />
+            <result property="pic_size" column="pic_size" />
+            <result property="pic_width" column="pic_width" />
+            <result property="pic_height" column="pic_height" />
+            <result property="pic_scale" column="pic_scale" />
+            <result property="pic_format" column="pic_format" />
+            <result property="user_id" column="user_id" />
+            <result property="create_time" column="create_time" />
+            <result property="edit_time" column="edit_time" />
+            <result property="update_time" column="update_time" />
+            <result property="is_delete" column="is_delete" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,url,name,introduction,category,tags,
+        pic_size,pic_width,pic_height,pic_scale,pic_format,
+        user_id,create_time,edit_time,update_time,is_delete
+    </sql>
+</mapper>
