@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { useStorage } from '@vueuse/core'
 import { defineStore } from 'pinia'
 import { getLoginUserUsingGet } from '@/api/userController.ts'
 
@@ -6,7 +6,7 @@ import { getLoginUserUsingGet } from '@/api/userController.ts'
  * 存储登录用户信息的状态
  */
 export const useLoginUserStore = defineStore('loginUser', () => {
-  const loginUser = ref<API.LoginUserVO>({
+  const loginUser = useStorage<API.LoginUserVO>('loginUser', {
     userName: '未登录',
   })
 
