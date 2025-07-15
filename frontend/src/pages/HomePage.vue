@@ -71,7 +71,7 @@ const searchParams = reactive<API.UserQueryRequest>({
   current: 1,
   pageSize: 12,
   sortField: 'createTime',
-  sortOrder: 'ascend'
+  sortOrder: 'descend'
 })
 
 const fetchData = async () => {
@@ -166,7 +166,7 @@ onMounted(() => {
 
 #homePage .search-bar {
   max-width: 60%;
-  margin: 0 auto 20px;
+  margin: 0 auto 10px;
 }
 
 #homePage .tag-bar {

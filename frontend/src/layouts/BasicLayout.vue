@@ -8,7 +8,7 @@
         <router-view />
       </a-layout-content>
       <a-layout-footer class="footer">
-        <a href="https://www.baidu.com" target="_blank"> Sky-Snap </a>
+        <a href="https://github.com/RJLante/Sky-Snap" target="_blank"> Sky-Snap </a>
       </a-layout-footer>
     </a-layout>
   </div>
@@ -23,7 +23,6 @@ import GlobalHeader from '@/components/GlobalHeader.vue'
   padding-inline: 20px;
   background: white;
   color: unset;
-  margin-bottom: 16px;
 }
 
 #basicLayout .content {
