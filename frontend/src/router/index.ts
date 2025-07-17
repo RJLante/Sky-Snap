@@ -46,7 +46,8 @@ export const routes: RouteRecordRaw[] = [
     path: '/picture/:id',
     name: '图片详情',
     component: PictureDetailPage,
-    props: true
+    props: true,
+    meta: { hideInMenu: true }
   }
 ]
 
