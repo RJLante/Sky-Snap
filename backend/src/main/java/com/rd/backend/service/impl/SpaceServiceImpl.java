@@ -84,8 +84,8 @@ public class SpaceServiceImpl extends ServiceImpl<SpaceMapper, Space>
                     // 如果已有空间，就不能再创建
                     ThrowUtils.throwIf(exists, ErrorCode.PARAMS_ERROR, "同一用户只能创建一个私有空间");
                     // 创建
-                    boolean result = this.save(space);
-                    ThrowUtils.throwIf(result, ErrorCode.OPERATION_ERROR, "保存空间到数据库失败");
+                     boolean result = this.save(space);
+                    ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR, "保存空间到数据库失败");
                     // 返回新写入的数据 id
                     return space.getId();
                 });

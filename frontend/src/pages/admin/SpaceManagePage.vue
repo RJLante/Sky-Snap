@@ -2,44 +2,33 @@
   <div id="spaceManagePage">
     <!-- 标题 -->
     <a-flex justify="space-between">
-      <h2>图片管理</h2>
+      <h2>空间管理</h2>
       <a-space>
-        <a-button type="primary" href="/add_space" target="_blank">+ 创建图片</a-button>
-        <a-button type="primary" href="/add_space/batch" target="_blank" ghost>+ 批量创建图片</a-button>
+        <a-button type="primary" href="/add_space" target="_blank">+ 创建空间</a-button>
       </a-space>
     </a-flex>
     <div style="margin-bottom: 16px" />
     <!-- 搜索框 -->
     <a-form layout="inline" :model="searchParams" @finish="doSearch">
-      <a-form-item label="关键词" name="searchText">
+      <a-form-item label="空间名称" name="searchText">
         <a-input
-          v-model:value="searchParams.searchText"
-          placeholder="从名称和简介搜索"
+          v-model:value="searchParams.spaceName"
+          placeholder="请输入空间名称"
           allow-clear
         />
       </a-form-item>
-      <a-form-item label="类型" name="category">
-        <a-input v-model:value="searchParams.category" placeholder="请输入类型" allow-clear />
-      </a-form-item>
-      <a-form-item label="标签" name="tags">
+      <a-form-item label="空间级别" name="spaceLevel">
         <a-select
-          v-model:value="searchParams.tags"
-          mode="tags"
-          placeholder="请输入标签"
+          v-model:value="searchParams.spaceLevel"
+          :options="SPACE_LEVEL_OPTIONS"
+          placeholder="请选择空间基本"
           style="min-width: 180px"
           allow-clear
         />
       </a-form-item>
-      <a-form-item label="审核状态" name="reviewStatus">
-        <a-select
-          v-model:value="searchParams.reviewStatus"
-          :options="PIC_REVIEW_STATUS_OPTIONS"
-          placeholder="请输入审核状态"
-          style="min-width: 180px"
-          allow-clear
-        />
+      <a-form-item label="用户 id" name="userId">
+        <a-input v-model:value="searchParams.userId" placeholder="请输入用户 id" allow-clear />
       </a-form-item>
-
       <a-form-item>
         <a-button type="primary" html-type="submit">搜索</a-button>
       </a-form-item>
@@ -54,7 +43,7 @@
     >
       <template #bodyCell="{ column, record }">
         <template v-if="column.dataIndex === 'spaceLevel'">
-          <div>审核状态：{{ SPACE_LEVEL_MAP[record.spaceLevel] }}</div>
+          <div>{{ SPACE_LEVEL_MAP[record.spaceLevel] }}</div>
         </template>
         <template v-if="column.dataIndex === 'spaceUseInfo'">
           <div>大小：{{ formatSize(record.totalSize) }} / {{ formatSize(record.maxSize) }}</div>
@@ -88,7 +77,7 @@ import {
 } from '@/api/spaceController.ts'
 import { message } from 'ant-design-vue'
 import dayjs from 'dayjs'
-import { SPACE_LEVEL_MAP } from '../../constants/space.ts'
+import { SPACE_LEVEL_MAP, SPACE_LEVEL_OPTIONS } from '../../constants/space.ts'
 import { formatSize } from '../../util'
 
 
@@ -147,7 +136,7 @@ const fetchData = async () => {
     dataList.value = res.data.data.records ?? []
     total.value = res.data.data.total ?? 0
   } else {
-    message.error('获取图片列表失败' + res.data.message)
+    message.error('获取空间列表失败' + res.data.message)
   }
 }
 
@@ -182,7 +171,7 @@ const doSearch = () => {
   fetchData()
 }
 
-// 删除图片
+// 删除空间
 const doDelete = async (id: number) => {
   if (!id) {
     return
