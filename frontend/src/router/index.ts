@@ -9,6 +9,7 @@ import AddPicturePage from '@/pages/AddPicturePage.vue'
 import PictureManagePage from '@/pages/admin/PictureManagePage.vue'
 import PictureDetailPage from '@/pages/PictureDetailPage.vue'
 import AddPictureBatchPage from '@/pages/AddPictureBatchPage.vue'
+import SpaceManagePage from '@/pages/admin/SpaceManagePage.vue'
 
 export const routes: RouteRecordRaw[] = [
   { path: '/', name: '主页', component: HomePage },
@@ -40,6 +41,12 @@ export const routes: RouteRecordRaw[] = [
     path: '/admin/pictureManage',
     name: '图片管理',
     component: PictureManagePage,
+    meta: { access: ACCESS_ENUM.ADMIN }
+  },
+  {
+    path: '/admin/spaceManage',
+    name: '空间管理',
+    component: SpaceManagePage,
     meta: { access: ACCESS_ENUM.ADMIN }
   },
   {
