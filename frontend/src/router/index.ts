@@ -13,6 +13,7 @@ import SpaceManagePage from '@/pages/admin/SpaceManagePage.vue'
 import AddSpacePage from '@/pages/AddSpacePage.vue'
 import MySpacePage from '@/pages/MySpacePage.vue'
 import SpaceDetailPage from '@/pages/SpaceDetailPage.vue'
+import SearchPicturePage from '@/pages/SearchPicturePage.vue'
 
 export const routes: RouteRecordRaw[] = [
   { path: '/', name: '主页', component: HomePage },
@@ -78,6 +79,13 @@ export const routes: RouteRecordRaw[] = [
     props: true,
     meta: { hideInMenu: true }
   },
+  {
+    path: '/search_picture',
+    name: '图片搜索',
+    component: SearchPicturePage,
+    meta: { hideInMenu: true }
+  }
+
 
 ]
 
