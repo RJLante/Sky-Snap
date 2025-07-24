@@ -9,6 +9,9 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.rd.backend.api.aliyunai.AliYunAiApi;
+import com.rd.backend.api.aliyunai.model.CreateOutPaintingTaskRequest;
+import com.rd.backend.api.aliyunai.model.CreateOutPaintingTaskResponse;
 import com.rd.backend.exception.BusinessException;
 import com.rd.backend.exception.ErrorCode;
 import com.rd.backend.exception.ThrowUtils;
@@ -79,6 +82,9 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
 
     @Resource
     private TransactionTemplate transactionTemplate;
+
+    @Resource
+    private AliYunAiApi aliYunAiApi;
 
     @Override
     public PictureVO uploadPicture(Object inputSource, PictureUploadRequest pictureUploadRequest, User loginUser) {
@@ -490,13 +496,16 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
             // 操作数据库
             boolean result = this.removeById(pictureId);
             ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
-            // 更新空间的使用额度，释放额度
-            boolean update = spaceService.lambdaUpdate()
-                    .eq(Space::getId, oldPicture.getSpaceId())
-                    .setSql("total_size = total_size - " + oldPicture.getPicSize())
-                    .setSql("total_count = total_count - 1")
-                    .update();
-            ThrowUtils.throwIf(!update, ErrorCode.OPERATION_ERROR, "额度更新失败");
+            // 更新空间的使用额度，释放额度（公共图库没有空间 id，无需更新）
+            Long oldSpaceId = oldPicture.getSpaceId();
+            if (oldSpaceId != null) {
+                boolean update = spaceService.lambdaUpdate()
+                        .eq(Space::getId, oldSpaceId)
+                        .setSql("total_size = total_size - " + oldPicture.getPicSize())
+                        .setSql("total_count = total_count - 1")
+                        .update();
+                ThrowUtils.throwIf(!update, ErrorCode.OPERATION_ERROR, "额度更新失败");
+            }
             return true;
         });
 
@@ -629,6 +638,24 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
         // 5. 操作数据库进行批量更新
         boolean result = this.updateBatchById(pictureList);
         ThrowUtils.throwIf(!result, ErrorCode.SYSTEM_ERROR, "批量编辑图片失败");
+    }
+
+    @Override
+    public CreateOutPaintingTaskResponse createPictureOutPaintingTask(CreatePictureOutPaintingTaskRequest createPictureOutPaintingTaskRequest, User loginUser) {
+        // 获取图片信息
+        Long pictureId = createPictureOutPaintingTaskRequest.getPictureId();
+        Picture picture = Optional.ofNullable(this.getById(pictureId))
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_ERROR, "图片不存在"));
+        // 权限校验
+        checkPictureAuth(loginUser, picture);
+        // 创建扩图任务
+        CreateOutPaintingTaskRequest createOutPaintingTaskRequest = new CreateOutPaintingTaskRequest();
+        CreateOutPaintingTaskRequest.Input input = new CreateOutPaintingTaskRequest.Input();
+        input.setImageUrl(picture.getUrl());
+        createOutPaintingTaskRequest.setInput(input);
+        createOutPaintingTaskRequest.setParameters(createPictureOutPaintingTaskRequest.getParameters());
+        // 创建任务
+        return aliYunAiApi.createOutPaintingTask(createOutPaintingTaskRequest);
     }
 
     /**
