@@ -7,6 +7,7 @@ import com.rd.backend.model.enums.SpaceTypeEnum;
 import com.rd.backend.service.SpaceService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.driver.jdbc.core.connection.ShardingSphereConnection;
+import org.apache.shardingsphere.infra.metadata.database.ShardingSphereDatabase;
 import org.apache.shardingsphere.infra.metadata.database.rule.ShardingSphereRuleMetaData;
 import org.apache.shardingsphere.mode.manager.ContextManager;
 import org.apache.shardingsphere.sharding.api.config.ShardingRuleConfiguration;
@@ -18,13 +19,10 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
-@Component
+//@Component
 @Slf4j
 public class DynamicShardingManager {
 
@@ -36,7 +34,7 @@ public class DynamicShardingManager {
 
     private static final String LOGIC_TABLE_NAME = "picture";
 
-    private static final String DATABASE_NAME = "picture"; // 配置文件中的数据库名称
+    private static final String DATABASE_NAME = "logic_db"; // 配置文件中的数据库名称
 
     @PostConstruct
     public void initialize() {
@@ -68,16 +66,32 @@ public class DynamicShardingManager {
     private void updateShardingTableNodes() {
         Set<String> tableNames = fetchAllPictureTableNames();
         String newActualDataNodes = tableNames.stream()
-                .map(tableName -> "yu_picture." + tableName) // 确保前缀合法
+                .map(tableName -> "picture." + tableName) // 确保前缀合法
                 .collect(Collectors.joining(","));
         log.info("动态分表 actual-data-nodes 配置: {}", newActualDataNodes);
 
         ContextManager contextManager = getContextManager();
-        ShardingSphereRuleMetaData ruleMetaData = contextManager.getMetaDataContexts()
-                .getMetaData()
-                .getDatabases()
-                .get(DATABASE_NAME)
-                .getRuleMetaData();
+//        ShardingSphereRuleMetaData ruleMetaData = contextManager.getMetaDataContexts()
+//                .getMetaData()
+//                .getDatabases()
+//                .get(DATABASE_NAME)
+//                .getRuleMetaData();
+        // 兼容不同环境下逻辑数据库名称不一致的情况，优先使用配置中的数据库名称，
+        // 若未找到则回退至可用的第一个数据库，避免空指针异常
+        Map<String, ? extends ShardingSphereDatabase> databaseMap =
+                contextManager.getMetaDataContexts().getMetaData().getDatabases();
+        String databaseName = DATABASE_NAME;
+        if (!databaseMap.containsKey(databaseName)) {
+            if (!databaseMap.isEmpty()) {
+                databaseName = databaseMap.keySet().iterator().next();
+                log.warn("未找到数据库 '{}', 回退使用 '{}' 进行分表配置", DATABASE_NAME, databaseName);
+            } else {
+                log.error("ShardingSphere 未初始化任何数据库，动态分表更新失败");
+                return;
+            }
+        }
+
+        ShardingSphereRuleMetaData ruleMetaData = databaseMap.get(databaseName).getRuleMetaData();
 
         Optional<ShardingRule> shardingRule = ruleMetaData.findSingleRule(ShardingRule.class);
         if (shardingRule.isPresent()) {
@@ -97,8 +111,10 @@ public class DynamicShardingManager {
                     })
                     .collect(Collectors.toList());
             ruleConfig.setTables(updatedRules);
-            contextManager.alterRuleConfiguration(DATABASE_NAME, Collections.singleton(ruleConfig));
-            contextManager.reloadDatabase(DATABASE_NAME);
+//            contextManager.alterRuleConfiguration(DATABASE_NAME, Collections.singleton(ruleConfig));
+//            contextManager.reloadDatabase(DATABASE_NAME);
+            contextManager.alterRuleConfiguration(databaseName, Collections.singleton(ruleConfig));
+            contextManager.reloadDatabase(databaseName);
             log.info("动态分表规则更新成功！");
         } else {
             log.error("未找到 ShardingSphere 的分片规则配置，动态分表更新失败。");

@@ -11,9 +11,10 @@
             <result property="spaceRole" column="space_role" />
             <result property="createTime" column="create_time" />
             <result property="updateTime" column="update_time" />
+            <result property="isDelete" column="is_delete" />
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,space_id,user_id,space_role,create_time,update_time
+        id,space_id,user_id,space_role,create_time,update_time, is_delete
     </sql>
 </mapper>

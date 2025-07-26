@@ -10,7 +10,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.rd.backend.exception.BusinessException;
 import com.rd.backend.exception.ErrorCode;
 import com.rd.backend.exception.ThrowUtils;
-import com.rd.backend.manager.sharding.DynamicShardingManager;
+//import com.rd.backend.manager.sharding.DynamicShardingManager;
 import com.rd.backend.mapper.SpaceMapper;
 import com.rd.backend.model.dto.space.SpaceAddRequest;
 import com.rd.backend.model.dto.space.SpaceQueryRequest;
@@ -56,9 +56,10 @@ public class SpaceServiceImpl extends ServiceImpl<SpaceMapper, Space>
     @Resource
     private SpaceUserService spaceUserService;
 
-    @Resource
-    @Lazy
-    private DynamicShardingManager dynamicShardingManager;
+    // 为了方便部署，暂时不使用分库分表
+//    @Resource
+//    @Lazy
+//    private DynamicShardingManager dynamicShardingManager;
 
     // 用于给每个 userId 动态分配锁对象，操作完成后会清除，避免锁对象无限增长导致内存泄漏
     private final Map<Long, Object> lockMap = new ConcurrentHashMap<>();
@@ -113,7 +114,7 @@ public class SpaceServiceImpl extends ServiceImpl<SpaceMapper, Space>
                         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR, "创建团队成员记录失败");
                     }
                     // 创建分表
-                    dynamicShardingManager.createSpacePictureTable(space);
+//                    dynamicShardingManager.createSpacePictureTable(space);
                     // 返回新写入的数据 id
                     return space.getId();
                 });
