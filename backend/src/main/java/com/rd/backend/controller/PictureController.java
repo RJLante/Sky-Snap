@@ -150,8 +150,8 @@ public class PictureController {
         Picture oldPicture = pictureService.getById(id);
         ThrowUtils.throwIf(oldPicture == null, ErrorCode.NOT_FOUND_ERROR);
         // 补充审核参数
-        User loginUer = userService.getLoginUer(request);
-        pictureService.fillReviewPicture(oldPicture, loginUer);
+        User loginUser = userService.getLoginUer(request);
+        pictureService.fillReviewPicture(oldPicture, loginUser);
         // 操作数据库
         boolean result = pictureService.updateById(picture);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);

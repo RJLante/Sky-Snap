@@ -397,47 +397,47 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
      */
     @Override
     public void fillReviewPicture(Picture picture, User loginUser) {
+        // 默认待审核
+        picture.setReviewStatus(PictureReviewStatusEnum.REVIEWING.getValue());
         if (userService.isAdmin(loginUser)) {
             // 管理员自动过审
             picture.setReviewStatus(PictureReviewStatusEnum.PASS.getValue());
             picture.setReviewerId(loginUser.getId());
             picture.setReviewMessage("管理员自动过审");
             picture.setReviewTime(new Date());
-//        } else {
+            return;
+        } else {
             // 非管理员，无论是编辑还是创建默认都是待审核
 //            picture.setReviewStatus(PictureReviewStatusEnum.REVIEWING.getValue());
-            return;
-        }
-        Long spaceId = picture.getSpaceId();
-        if (spaceId != null) {
-            Space space = spaceService.getById(spaceId);
-            if (space != null) {
-                // 私有空间上传，空间拥有者默认自动过审
-                if (space.getSpaceType() == SpaceTypeEnum.PRIVATE.getValue()
-                        && ObjUtil.equals(space.getUserId(), loginUser.getId())) {
-                    picture.setReviewStatus(PictureReviewStatusEnum.PASS.getValue());
-                    picture.setReviewerId(loginUser.getId());
-                    picture.setReviewMessage("个人空间自动过审");
-                    picture.setReviewTime(new Date());
-                    return;
-                }
-
-                // 团队空间，根据成员权限判断是否自动过审
-                if (space.getSpaceType() == SpaceTypeEnum.TEAM.getValue()) {
-                    List<String> permissions = spaceUserAuthManager.getPermissionList(space, loginUser);
-                    if (permissions.contains(SpaceUserPermissionConstant.PICTURE_UPLOAD)
-                            || permissions.contains(SpaceUserPermissionConstant.PICTURE_EDIT)) {
+            Long spaceId = picture.getSpaceId();
+            if (spaceId != null) {
+                Space space = spaceService.getById(spaceId);
+                if (space != null) {
+                    // 私有空间上传，空间拥有者默认自动过审
+                    if (space.getSpaceType() == SpaceTypeEnum.PRIVATE.getValue()
+                            && ObjUtil.equals(space.getUserId(), loginUser.getId())) {
                         picture.setReviewStatus(PictureReviewStatusEnum.PASS.getValue());
                         picture.setReviewerId(loginUser.getId());
-                        picture.setReviewMessage("成员自动过审");
+                        picture.setReviewMessage("个人空间自动过审");
                         picture.setReviewTime(new Date());
                         return;
+                    }
+
+                    // 团队空间，根据成员权限判断是否自动过审
+                    if (space.getSpaceType() == SpaceTypeEnum.TEAM.getValue()) {
+                        List<String> permissions = spaceUserAuthManager.getPermissionList(space, loginUser);
+                        if (permissions.contains(SpaceUserPermissionConstant.PICTURE_UPLOAD)
+                                || permissions.contains(SpaceUserPermissionConstant.PICTURE_EDIT)) {
+                            picture.setReviewStatus(PictureReviewStatusEnum.PASS.getValue());
+                            picture.setReviewerId(loginUser.getId());
+                            picture.setReviewMessage("成员自动过审");
+                            picture.setReviewTime(new Date());
+                            return;
+                        }
                     }
                 }
             }
         }
-        // 默认待审核
-        picture.setReviewStatus(PictureReviewStatusEnum.REVIEWING.getValue());
     }
 
     @Override
