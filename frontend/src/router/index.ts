@@ -15,6 +15,7 @@ import MySpacePage from '@/pages/MySpacePage.vue'
 import SpaceDetailPage from '@/pages/SpaceDetailPage.vue'
 import SearchPicturePage from '@/pages/SearchPicturePage.vue'
 import SpaceAnalyzePage from '@/pages/SpaceAnalyzePage.vue'
+import SpaceUserManagePage from '@/pages/admin/SpaceUserManagePage.vue'
 
 export const routes: RouteRecordRaw[] = [
   { path: '/', name: '主页', component: HomePage },
@@ -67,6 +68,15 @@ export const routes: RouteRecordRaw[] = [
     meta: { access: ACCESS_ENUM.ADMIN }
   },
   {
+    path: '/spaceUserManage/:id',
+    name: '空间成员管理',
+    component: SpaceUserManagePage,
+    meta: { access: ACCESS_ENUM.ADMIN },
+    props: true,
+    // meta: { hideInMenu: true }
+  },
+
+  {
     path: '/picture/:id',
     name: '图片详情',
     component: PictureDetailPage,
@@ -91,7 +101,8 @@ export const routes: RouteRecordRaw[] = [
     name: '空间分析',
     component: SpaceAnalyzePage,
     meta: { hideInMenu: true }
-  }
+  },
+
 
 
 ]

@@ -113,3 +113,7 @@ create table if not exists space_user
     INDEX idx_spaceId (space_id),                    -- 提升按空间查询的性能
     INDEX idx_userId (user_id)                       -- 提升按用户查询的性能
 ) comment '空间用户关联' collate = utf8mb4_unicode_ci;
+
+ALTER TABLE space_user
+    MODIFY COLUMN is_delete TINYINT NOT NULL DEFAULT 0 COMMENT '是否删除';
+

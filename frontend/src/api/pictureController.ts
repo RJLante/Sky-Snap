@@ -262,6 +262,7 @@ export async function uploadPictureUsingPost(
       ...params,
     },
     data: formData,
+    // @ts-ignore
     requestType: 'form',
     ...(options || {}),
   })
