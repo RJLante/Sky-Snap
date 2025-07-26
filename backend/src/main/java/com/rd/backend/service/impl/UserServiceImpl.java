@@ -11,6 +11,7 @@ import com.rd.backend.constant.UserConstant;
 import com.rd.backend.exception.BusinessException;
 import com.rd.backend.exception.ErrorCode;
 import com.rd.backend.exception.ThrowUtils;
+import com.rd.backend.manager.auth.StpKit;
 import com.rd.backend.mapper.UserMapper;
 import com.rd.backend.model.dto.user.UserQueryRequest;
 import com.rd.backend.model.entity.User;
@@ -87,7 +88,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
         // 保存用户登录态
         request.getSession().setAttribute(UserConstant.USER_LOGIN_STATE, user);
-
+        // 记录用户登录态到 Sa-token，空间鉴权使用
+        StpKit.SPACE.login(user.getId());
+        StpKit.SPACE.getSession().set(UserConstant.USER_LOGIN_STATE, user);
         return this.getLoginUserVO(user);
     }
 

@@ -1,10 +1,6 @@
 package com.rd.backend.controller;
 
-import cn.hutool.core.util.RandomUtil;
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import com.rd.backend.annotation.AuthCheck;
 import com.rd.backend.common.BaseResponse;
 import com.rd.backend.common.DeleteRequest;
@@ -13,6 +9,7 @@ import com.rd.backend.constant.UserConstant;
 import com.rd.backend.exception.BusinessException;
 import com.rd.backend.exception.ErrorCode;
 import com.rd.backend.exception.ThrowUtils;
+import com.rd.backend.manager.auth.SpaceUserAuthManager;
 import com.rd.backend.model.dto.space.*;
 import com.rd.backend.model.entity.Space;
 import com.rd.backend.model.entity.User;
@@ -22,18 +19,13 @@ import com.rd.backend.service.SpaceService;
 import com.rd.backend.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @RestController
@@ -46,6 +38,9 @@ public class SpaceController {
 
     @Resource
     private SpaceService spaceService;
+
+    @Resource
+    private SpaceUserAuthManager spaceUserAuthManager;
 
 
     @PostMapping("/add")
@@ -129,8 +124,12 @@ public class SpaceController {
         // 查询数据库
         Space space = spaceService.getById(id);
         ThrowUtils.throwIf(space == null, ErrorCode.NOT_FOUND_ERROR);
+        SpaceVO spaceVO = spaceService.getSpaceVO(space, request);
+        User loginUser = userService.getLoginUer(request);
+        List<String> permissionList = spaceUserAuthManager.getPermissionList(space, loginUser);
+        spaceVO.setPermissionList(permissionList);
         // 获取封装类
-        return ResultUtils.success(spaceService.getSpaceVO(space, request));
+        return ResultUtils.success(spaceVO);
     }
 
     /**

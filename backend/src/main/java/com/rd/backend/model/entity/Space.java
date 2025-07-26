@@ -2,6 +2,7 @@ package com.rd.backend.model.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 
+import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
 
@@ -11,7 +12,7 @@ import lombok.Data;
  */
 @TableName(value ="space")
 @Data
-public class Space {
+public class Space implements Serializable {
     /**
      * id
      */
@@ -27,6 +28,11 @@ public class Space {
      * 空间级别：0-普通版 1-专业版 2-旗舰版
      */
     private Integer spaceLevel;
+
+    /**
+     * 空间权限：0-私有 1-团队
+     */
+    private Integer spaceType;
 
     /**
      * 空间图片的最大总大小
