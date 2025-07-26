@@ -71,11 +71,9 @@ export const routes: RouteRecordRaw[] = [
     path: '/spaceUserManage/:id',
     name: '空间成员管理',
     component: SpaceUserManagePage,
-    meta: { access: ACCESS_ENUM.ADMIN },
+    meta: { access: ACCESS_ENUM.ADMIN , hideInMenu: true},
     props: true,
-    // meta: { hideInMenu: true }
   },
-
   {
     path: '/picture/:id',
     name: '图片详情',
