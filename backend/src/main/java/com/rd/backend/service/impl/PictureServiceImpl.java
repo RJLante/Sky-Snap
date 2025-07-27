@@ -200,6 +200,17 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
                         .update();
                 ThrowUtils.throwIf(!update, ErrorCode.OPERATION_ERROR, "额度更新失败");
             }
+            // 再次更新审核信息，避免被默认值覆盖
+            if (Objects.equals(picture.getReviewStatus(), PictureReviewStatusEnum.PASS.getValue())) {
+                Picture reviewUpdate = new Picture();
+                reviewUpdate.setId(picture.getId());
+                reviewUpdate.setReviewStatus(picture.getReviewStatus());
+                reviewUpdate.setReviewerId(picture.getReviewerId());
+                reviewUpdate.setReviewMessage(picture.getReviewMessage());
+                reviewUpdate.setReviewTime(picture.getReviewTime());
+                boolean reviewResult = this.updateById(reviewUpdate);
+                ThrowUtils.throwIf(!reviewResult, ErrorCode.OPERATION_ERROR, "审核信息更新失败");
+            }
             return picture;
         });
         return PictureVO.objToVo(picture);
