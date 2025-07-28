@@ -21,19 +21,30 @@
 
 <script setup lang="ts">
 import { onMounted, reactive } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { getUserVoByIdUsingGet, editUserUsingPost } from '@/api/userController.ts'
 import { message } from 'ant-design-vue'
+import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 
 const route = useRoute()
 
 const form = reactive<API.UserUpdateRequest>({})
 
+const loginUserStore = useLoginUserStore()
+const loginUser = loginUserStore.loginUser
+
+const router = useRouter()
+
 const handleSubmit = async () => {
-  const id = Number(route.params.id)
+  const id = Number(loginUser.id)
   const res = await editUserUsingPost({ id, ...form })
   if (res.data.code === 0 && res.data.data) {
+    await loginUserStore.fetchLoginUser()
     message.success('更新成功')
+    // 跳转到主页
+    router.push({
+      path: `/`
+    })
   } else {
     message.error('更新失败' + res.data.message)
   }

@@ -152,9 +152,9 @@ public class UserController {
         if (!loginUser.getId().equals(userUpdateRequest.getId()) && !userService.isAdmin(loginUser)) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
-        User user = userService.getLoginUer(request);
-        BeanUtils.copyProperties(userUpdateRequest, user);
-        boolean result = userService.updateById(user);
+        loginUser.setUserName(userUpdateRequest.getUserName());
+        loginUser.setUserProfile(userUpdateRequest.getUserProfile());
+        boolean result = userService.updateById(loginUser);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         return ResultUtils.success(true);
     }
