@@ -174,6 +174,14 @@ const initWebsocket = () => {
   // 建立 WebSocket 连接
   websocket.connect()
 
+  websocket.on('open', (msg) => {
+    console.log('WebSocket 连接已打开：', msg)
+    // 同步初始编辑的用户
+    if (msg.user) {
+      editingUser.value = msg.user
+    }
+  })
+
   // 监听通知消息
   websocket.on(PICTURE_EDIT_MESSAGE_TYPE_ENUM.INFO, (msg) => {
     console.log('收到通知消息：', msg)
