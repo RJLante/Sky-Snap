@@ -14,6 +14,7 @@
         </a-button>
 
         <a-button
+          v-if="canManageSpaceUser"
           type="primary"
           ghost
           :icon="h(TeamOutlined)"
