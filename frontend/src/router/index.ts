@@ -16,6 +16,7 @@ import SpaceDetailPage from '@/pages/SpaceDetailPage.vue'
 import SearchPicturePage from '@/pages/SearchPicturePage.vue'
 import SpaceAnalyzePage from '@/pages/SpaceAnalyzePage.vue'
 import SpaceUserManagePage from '@/pages/admin/SpaceUserManagePage.vue'
+import UserInfoPage from '@/pages/user/UserInfoPage.vue'
 
 export const routes: RouteRecordRaw[] = [
   { path: '/', name: '主页', component: HomePage },
@@ -35,7 +36,13 @@ export const routes: RouteRecordRaw[] = [
     component: MySpacePage,
     meta: { hideInMenu: true }
   },
-
+  {
+    path: '/user/info/:id',
+    name: '个人信息',
+    component: UserInfoPage,
+    props: true,
+    meta: { hideInMenu: true }
+  },
   {
     path: '/add_picture/batch',
     name: '批量创建图片',

@@ -35,6 +35,12 @@
                       我的空间
                     </router-link>
                   </a-menu-item>
+                  <a-menu-item>
+                    <router-link :to="`/user/info/${loginUserStore.loginUser.id}`">
+                      <UserOutlined />
+                      个人主页
+                    </router-link>
+                  </a-menu-item>
                   <a-menu-item @click="doLogout">
                     <LogoutOutlined />
                     <a href="javascript:;"> 退出登录</a>
