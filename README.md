@@ -46,9 +46,9 @@ git clone -b main https://github.com/RJLante/Sky-Snap
 | **管理后台**        | 管理员可集中管理用户、空间、图库与成员权限                   |
 | **以图搜图**        | 通过分析请求获取到百度以图搜图 API，利用 Jsoup 和 HttpClient 调用 API |
 | **AI 扩图**         | 基于阿里云百炼大模型封装 AI 绘图服务，提供创建与查询任务的 API |
-| **管理后台**        | 管理员可集中管理用户、空间、图库与成员权限                   |
-| **管理后台**        | 管理员可集中管理用户、空间、图库与成员权限                   |
-| **管理后台**        | 管理员可集中管理用户、空间、图库与成员权限                   |
+| **数据分表**        | 使用 ShardingSphere 自定义分表算法实现了团队空间图片的 动态分表，提高了查询效率 |
+| **协作编辑**        | 基于 WebSocket + 事件驱动设计 实现多人协作编辑图片功能，设置编辑锁避免编辑冲突 |
+| **协作优化**        | 基于 Disruptor 无锁队列 实现了 WebSocket 消息的异步化处理，显著提升系统吞吐量 |
 
 
 ![image-20250728211443593](README.assets/image-20250728211443593.png)
@@ -57,11 +57,17 @@ git clone -b main https://github.com/RJLante/Sky-Snap
 
 ![image-20250728212627292](README.assets/image-20250728212627292.png)
 
+![image-20250728220503766](README.assets/image-20250728220503766.png)
+
+![image-20250728220606266](README.assets/image-20250728220606266.png)
+
+![image-20250728220626074](README.assets/image-20250728220626074.png)
+
 ### 技术栈
 
 | 层次            | 选型                                                         |
 | --------------- | ------------------------------------------------------------ |
-| **后端**        | Java 17 · Spring Boot 2.7 · Spring MVC · MyBatis‑Plus · Redis 6 · Caffeine · Knife4j · Lombok |
+| **后端**        | Java 17 · Spring Boot 2.7 · Spring MVC · MyBatis‑Plus · Redis 6 · Caffeine · Knife4j · Lombok · Sa-token · shardingsphere · websocket · disruptor |
 | **数据库**      | MySQL 8（`sql/create_table.sql` 提供建表脚本）               |
 | **对象存储**    | 腾讯云 COS SDK 5.x                                           |
 | **前端**        | Vue 3 · Vite 5 · Pinia · Ant Design Vue 4 · Axios            |

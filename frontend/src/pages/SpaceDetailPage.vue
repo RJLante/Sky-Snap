@@ -14,7 +14,7 @@
         </a-button>
 
         <a-button
-          v-if="canManageSpaceUser"
+          v-if="canManageSpaceUser  && isTeamSpace"
           type="primary"
           ghost
           :icon="h(TeamOutlined)"
@@ -91,12 +91,15 @@ import PictureSearchForm from '@/components/PictureSearchForm.vue'
 import { ColorPicker } from 'vue3-colorpicker'
 import BatchEditPictureModal from '@/components/BatchEditPictureModal.vue'
 import { EditOutlined, BarChartOutlined, TeamOutlined } from '@ant-design/icons-vue'
-import { SPACE_PERMISSION_ENUM, SPACE_TYPE_MAP } from '../constants/space.ts'
+import { SPACE_PERMISSION_ENUM, SPACE_TYPE_ENUM, SPACE_TYPE_MAP } from '../constants/space.ts'
 
 const props = defineProps<{
   id: string | number
 }>()
 const space = ref<API.SpaceVO>({})
+
+// 当前空间是否为团队空间
+const isTeamSpace = computed(() => space.value.spaceType === SPACE_TYPE_ENUM.TEAM)
 
 // 获取空间详情
 const fetchSpaceDetail = async () => {

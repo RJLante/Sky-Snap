@@ -7,11 +7,10 @@ router.beforeEach(async (to, from, next) => {
   const loginUserStore = useLoginUserStore()
   let loginUser = loginUserStore.loginUser
 
-  // // 如果之前没登陆过，自动登录
-  if (!loginUser || !loginUser.userRole) {
-    // 加 await 是为了等用户登录成功之后，再执行后续的代码
-    await loginUserStore.fetchLoginUser();
-    loginUser = loginUserStore.loginUser;
+  // 首次进入页面时向后端确认登录状态，避免使用过期的本地缓存
+  if (!loginUserStore.hasFetched) {
+    await loginUserStore.fetchLoginUser()
+    loginUser = loginUserStore.loginUser
   }
 
   console.log('登录用户信息', loginUser)
