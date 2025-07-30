@@ -11,6 +11,8 @@
 git clone -b main https://github.com/RJLante/Sky-Snap
 ```
 
+#### 在线体验：http://118.25.143.47/    管理员账号：admin 密码：yx828282
+
 ## ⚙ 项目简介
 
 **Sky‑Snap** 将图库分为了公共图库与个人私有空间，用户可以在主页访问公共图库，并在公共图库上传图片，目前支持多种图片上传方式：

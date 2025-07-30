@@ -409,17 +409,18 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
     @Override
     public void fillReviewPicture(Picture picture, User loginUser) {
         // 默认待审核
-        picture.setReviewStatus(PictureReviewStatusEnum.REVIEWING.getValue());
+//        if (picture.getReviewStatus() == null) {
+//            picture.setReviewStatus(PictureReviewStatusEnum.REVIEWING.getValue());
+//        }
         if (userService.isAdmin(loginUser)) {
             // 管理员自动过审
             picture.setReviewStatus(PictureReviewStatusEnum.PASS.getValue());
             picture.setReviewerId(loginUser.getId());
             picture.setReviewMessage("管理员自动过审");
             picture.setReviewTime(new Date());
-            return;
         } else {
             // 非管理员，无论是编辑还是创建默认都是待审核
-//            picture.setReviewStatus(PictureReviewStatusEnum.REVIEWING.getValue());
+            picture.setReviewStatus(PictureReviewStatusEnum.REVIEWING.getValue());
             Long spaceId = picture.getSpaceId();
             if (spaceId != null) {
                 Space space = spaceService.getById(spaceId);

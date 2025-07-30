@@ -96,7 +96,7 @@ const fetchTeamSpaceList = async () => {
  * 监听变量，改变时触发数据的重新加载
  */
 watchEffect(() => {
-  // 登录才加载
+// 仅在已经确认登录状态后再加载团队空间列表，避免使用过期的缓存数据
   if (loginUserStore.loginUser.id) {
     fetchTeamSpaceList()
   }
